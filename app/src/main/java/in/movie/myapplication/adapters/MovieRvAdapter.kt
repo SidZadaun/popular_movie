@@ -1,64 +1,44 @@
 package `in`.movie.myapplication.adapters
 
-import `in`.movie.myapplication.R
-import `in`.movie.myapplication.models.Result
-import android.app.Activity
+import `in`.movie.myapplication.databinding.MovieRvItemBinding
+import `in`.movie.myapplication.models.MovieData
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 
 class MovieRvAdapter(
-    activity: FragmentActivity?,
-    private var mDataset: ArrayList<Result>,
-) : RecyclerView.Adapter<MovieRvAdapter.ViewHolder>() {
+    private var mDataset: ArrayList<MovieData>,
+) : RecyclerView.Adapter<MovieRvAdapter.MovieViewHolder>() {
 
-    private var activity: Activity? = activity
+    private lateinit var binding: MovieRvItemBinding
 
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var image: ImageView
-        var title: TextView
-        var desc: TextView
-
-        init {
-            image = itemView.findViewById(R.id.image)
-            title = itemView.findViewById(R.id.title)
-            desc = itemView.findViewById(R.id.desc)
-        }
+    class MovieViewHolder(binding: MovieRvItemBinding) : RecyclerView.ViewHolder(binding.root) {
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val vh: ViewHolder
-
-            val view4: View = LayoutInflater.from(parent.context).inflate(
-                R.layout.movie_rv_item, parent, false)
-            vh = ViewHolder(view4)
-           return vh
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+                binding = MovieRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+           return MovieViewHolder(binding)
 
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = mDataset[position].title
-        holder.desc.text = mDataset[position].overview
-        Glide.with(activity!!).load("https://image.tmdb.org/t/p/w342"+ mDataset[position].posterPath).into(holder.image)
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        binding.title.text = mDataset[position].title
+        binding.year.text = mDataset[position].id.toString()
+        binding.desc.text = mDataset[position].plot
+        binding.rate.text = mDataset[position].rating.toString()
     }
 
     override fun getItemCount(): Int {
-        return if (mDataset.size>0){
-            mDataset.size
-        }else{
-            return 0
-        }
-
+       return mDataset.size
     }
 
-
-
+        fun setData(data: List<MovieData>) {
+            mDataset.run {
+                clear()
+                addAll(data)
+        }
+    }
 
 }
